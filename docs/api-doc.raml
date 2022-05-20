@@ -1,0 +1,151 @@
+#%RAML 1.0
+title: Book App REST API
+version: v1
+baseUrl: http://localhost:8080/{version}
+mediaType: application/json
+
+types:
+  Book:
+    type: object
+    properties:
+      title:
+        type: string
+        required: True
+      description:
+        type: string
+      publicationYear:
+        type: integer
+      country:
+        type: string
+      author:
+        type: string
+        required: True
+  BookWithUrl:
+    type: Book
+    properties:
+      url:
+        type: string
+  Author:
+    type: object
+    properties:
+      id:
+        type: number
+      name:
+        type: string
+      surname:
+        type: string
+  AuthorWithUrls:
+    type: Author
+    properties:
+      url:
+        type: string
+      books:
+        type: string[]
+
+e:
+  get:
+    description: Obtener una lista de todos los libros
+    queryParameters:
+      country:
+        type: string
+        description: Filtrar los libros por país
+    responses:
+      200:
+        body:
+          type: BookWithUrl[]
+  post:
+    description: Crear un nuevo libro
+    body:
+      type: Book
+    responses:
+      201:
+        body:
+          type: BookWithUrl
+      422:
+        description: Los datos enviados tienen errores
+  /{id}:
+    get:
+      responses:
+        200:
+          body:
+            type: BookWithUrl
+        404:
+          description: El libro solicitado no existe
+    put:
+      body:
+        type: Book
+      responses:
+        200:
+          body:
+            type: BookWithUrl
+        404:
+          description: El libro solicitado no existe
+        422:
+          description: Los datos enviados tienen errores
+    delete:
+      responses:
+        204:
+          description: Libro eliminado con éxito
+        404:
+          description: El libro solicitado no existe
+    /author:
+      get:
+        responses:
+          200:
+            body:
+              type: AuthorWithUrls
+          404:
+            description: El libro solicitado no existe
+/authors:
+  get:
+    description: Obtener una lista de todos los autores
+    responses:
+      200:
+        body:
+          type: AuthorWithUrls[]
+  post:
+    description: Crear un nuevo autor
+    body:
+      type: Author
+    responses:
+      201:
+        body:
+          type: AuthorWithUrls
+      422:
+        description: Los datos enviados tienen errores
+  /{id}:
+    get:
+      responses:
+        200:
+          body:
+            type: AuthorWithUrls
+        404:
+          description: El autor solicitado no existe
+    put:
+      body:
+        type: Author
+      responses:
+        200:
+          body:
+            type: AuthorWithUrls
+        404:
+          description: El autor solicitado no existe
+        422:
+          description: Los datos enviados tienen errores
+    delete:
+      responses:
+        204:
+          description: Autor eliminado con éxito
+        404:
+          description: El autor solicitado no existe
+        409:
+          description: El autor no se puede eliminar porque posee libros asociados
+    /books:
+      get:
+        description: Obtener una lista de los libros de un autor
+        responses:
+          200:
+            body:
+              type: BookWithUrl[]
+          404:
+            description: El autor solicitado no existe
